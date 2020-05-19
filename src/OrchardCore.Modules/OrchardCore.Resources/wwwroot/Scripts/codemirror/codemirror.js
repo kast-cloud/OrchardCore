@@ -3,7 +3,7 @@
 ** Any changes made directly to this file will be overwritten next time its asset group is processed by Gulp.
 */
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: https://codemirror.net/LICENSE
@@ -6256,6 +6256,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         if (update.visible.from >= cm.display.viewFrom && update.visible.to <= cm.display.viewTo) {
           break;
         }
+      } else if (first) {
+        update.visible = visibleLines(cm.display, cm.doc, viewport);
       }
 
       if (!updateDisplayIfNeeded(cm, update)) {
@@ -11666,6 +11668,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
       cm.display.input.readOnlyChanged(val);
     });
+    option("screenReaderLabel", null, function (cm, val) {
+      val = val === '' ? null : val;
+      cm.display.input.screenReaderLabelChanged(val);
+    });
     option("disableInput", false, function (cm, val) {
       if (!val) {
         cm.display.input.reset();
@@ -12923,7 +12929,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         scrollToCoords(this, this.doc.scrollLeft, this.doc.scrollTop);
         updateGutterSpace(this.display);
 
-        if (oldHeight == null || Math.abs(oldHeight - textHeight(this.display)) > .5) {
+        if (oldHeight == null || Math.abs(oldHeight - textHeight(this.display)) > .5 || this.options.lineWrapping) {
           estimateLineHeights(this);
         }
 
@@ -13242,9 +13248,18 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     on(div, "cut", onCopyCut);
   };
 
+  ContentEditableInput.prototype.screenReaderLabelChanged = function (label) {
+    // Label for screenreaders, accessibility
+    if (label) {
+      this.div.setAttribute('aria-label', label);
+    } else {
+      this.div.removeAttribute('aria-label');
+    }
+  };
+
   ContentEditableInput.prototype.prepareSelection = function () {
     var result = prepareSelection(this.cm, false);
-    result.focus = this.cm.state.focused;
+    result.focus = document.activeElement == this.div;
     return result;
   };
 
@@ -13375,7 +13390,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   ContentEditableInput.prototype.focus = function () {
     if (this.cm.options.readOnly != "nocursor") {
-      if (!this.selectionInEditor()) {
+      if (!this.selectionInEditor() || document.activeElement != this.div) {
         this.showSelection(this.prepareSelection(), true);
       }
 
@@ -14034,6 +14049,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     this.textarea = this.wrapper.firstChild;
   };
 
+  TextareaInput.prototype.screenReaderLabelChanged = function (label) {
+    // Label for screenreaders, accessibility
+    if (label) {
+      this.textarea.setAttribute('aria-label', label);
+    } else {
+      this.textarea.removeAttribute('aria-label');
+    }
+  };
+
   TextareaInput.prototype.prepareSelection = function () {
     // Redraw the selection and/or cursor
     var cm = this.cm,
@@ -14562,6 +14586,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
   CodeMirror.fromTextArea = fromTextArea;
   addLegacyProps(CodeMirror);
-  CodeMirror.version = "5.52.0";
+  CodeMirror.version = "5.53.2";
   return CodeMirror;
 });
