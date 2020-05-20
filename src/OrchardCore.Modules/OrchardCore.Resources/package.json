@@ -10,7 +10,7 @@
     "codemirror": "5.53.2",
     "jquery": "3.4.1",
     "jquery-resizable-dom": "0.35.0",
-    "popper.js": "1.16.0",
+    "popper.js": "1.16.1",
     "sortablejs": "^1.10.2",
     "trumbowyg": "2.21.0",
     "vue": "^2.6.11",
