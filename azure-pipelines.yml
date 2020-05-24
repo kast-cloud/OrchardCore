@@ -48,7 +48,7 @@ steps:
 
 - task: DotNetCoreCLI@2
   displayName: 'Pack'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
   inputs:
     command: 'pack'
     packagesToPack: 'src/**/*.csproj'
@@ -56,7 +56,7 @@ steps:
 
 - task: DotNetCoreCLI@2
   displayName: 'Push to Feed'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
   inputs:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
