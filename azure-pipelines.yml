@@ -4,7 +4,10 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
-- dev
+  branches:
+    include:
+    - dev
+    - master
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -13,5 +16,41 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet restore'
+  inputs:
+    command: 'restore'
+    projects: '**/*.csproj'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+  inputs:
+    command: 'build'
+    projects: '**/*.csproj'
+    arguments: '--configuration $(BuildConfiguration) --no-restore'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+    command: 'test'
+    projects: 'test\OrchardCore.Tests\OrchardCore.Tests.csproj'
+    arguments: '--configuration $(BuildConfiguration) --no-build'
+
+
+- task: DotNetCoreCLI@2
+  displayName: 'Pack'
+  condition: and(succeeded(), startsWith(variables['build.sourceBranch']))
+  inputs:
+    command: 'pack'
+    packagesToPack: 'src/**/*.csproj'
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'PACKAGE_VERSION'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Push to Feed'
+  condition: and(succeeded(), startsWith(variables['build.sourceBranch']))
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+    nuGetFeedType: 'internal'
+    publishVstsFeed: 'f916b128-58e5-458b-af5f-57086c37ee0c'
