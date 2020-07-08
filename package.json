@@ -14,7 +14,9 @@
     "install:startbootstrap-clean-blog": "cd src/OrchardCore.Themes/TheBlogTheme/wwwroot && npm install",
     "install:startbootstrap-coming-soon": "cd src/OrchardCore.Themes/TheComingSoonTheme/wwwroot && npm install",
     "install:orchardcore.thetheme": "cd src/OrchardCore.Themes/TheTheme && npm install",
-    "postinstall": "run-s install:*"
+    "postinstall": "run-s install:*",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",
@@ -52,6 +54,8 @@
     "typescript": "^3.9.6"
   },
   "dependencies": {
-    "npm-check-updates": "^7.0.1"
-  }
+    "npm-check-updates": "^7.0.1",
+    "snyk": "^1.360.0"
+  },
+  "snyk": true
 }
