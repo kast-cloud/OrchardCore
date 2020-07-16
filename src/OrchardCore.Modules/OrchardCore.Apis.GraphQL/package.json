@@ -10,7 +10,8 @@
     "graphql": "15.1.0",
     "npm-check-updates": "^7.0.1",
     "react": "16.13.1",
-    "react-dom": "16.13.1"
+    "react-dom": "16.13.1",
+    "snyk": "^1.361.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.4",
@@ -27,6 +28,9 @@
     "webpack-cli": "^3.3.12"
   },
   "scripts": {
-    "build": "webpack --mode production"
-  }
+    "build": "webpack --mode production",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
+  },
+  "snyk": true
 }
