@@ -24,11 +24,16 @@ steps:
     includePreviewVersions: true
     packageType: runtime
 
-- script: dotnet build --configuration $(buildConfiguration) --version-suffix $(OrchardBuildNumber) /nodeReuse:false /p:TreatWarningsAsErrors="false"
-  displayName: 'Build $(buildConfiguration)'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    arguments: '--configuration $(buildConfiguration) --version-suffix $(OrchardBuildNumber) /nodeReuse:false /p:TreatWarningsAsErrors="false"'
 
-- script: dotnet test -c $(buildConfiguration) --no-restore --no-build ./test/OrchardCore.Tests/OrchardCore.Tests.csproj
-  displayName: 'Unit Tests'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    projects: 'test/OrchardCore.Tests/OrchardCore.Tests.csproj'
+    arguments: '-c $(buildConfiguration) --no-restore --no-build'
 
 - task: DotNetCoreCLI@2
   inputs:
