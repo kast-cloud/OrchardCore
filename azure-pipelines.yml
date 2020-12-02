@@ -15,12 +15,12 @@ variables:
 steps:
 - task: UseDotNet@2
   inputs:
-    version: '5.0.100'
+    version: '5.0.x'
     includePreviewVersions: true # Required for preview versions
 
 - task: UseDotNet@2
   inputs:
-    version: '3.1.404'
+    version: '3.1.x'
     packageType: runtime
 
 - script: dotnet build --configuration $(buildConfiguration) --version-suffix $(OrchardBuildNumber) /nodeReuse:false /p:TreatWarningsAsErrors="false"
