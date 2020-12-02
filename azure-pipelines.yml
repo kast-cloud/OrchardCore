@@ -26,3 +26,14 @@ steps:
 
 - script: dotnet build --configuration $(buildConfiguration) --version-suffix $(OrchardBuildNumber) /nodeReuse:false /p:TreatWarningsAsErrors="false"
   displayName: 'Build $(buildConfiguration)'
+
+- script: dotnet test -c $(buildConfiguration) --no-restore --no-build ./test/OrchardCore.Tests/OrchardCore.Tests.csproj
+  displayName: 'Unit Tests'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'pack'
+    packagesToPack: '**/*.csproj'
+    restoreArguments: no-restore
+    nobuild: true
+    versioningScheme: 'byBuildNumber'
