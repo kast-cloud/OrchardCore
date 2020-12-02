@@ -15,14 +15,14 @@ variables:
 steps:
 - task: UseDotNet@2
   inputs:
-    version: '5.0.100'
+    version: '5.0.x'
     includePreviewVersions: true
 
 - task: UseDotNet@2
   inputs:
-    version: '3.1.404'
-    packageType: runtime
+    version: '3.1.x'
     includePreviewVersions: true
+    packageType: runtime
 
 - script: dotnet build --configuration $(buildConfiguration) --version-suffix $(OrchardBuildNumber) /nodeReuse:false /p:TreatWarningsAsErrors="false"
   displayName: 'Build $(buildConfiguration)'
